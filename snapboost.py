@@ -76,7 +76,7 @@ class HNBM:
             preds +=  self.learning_rate_ * learner.predict(X)
         return preds
 
-class MixBoost(HNBM):
+class SnapBoost(HNBM):
     ''' A particular realization of a HNBM that uses decision trees
         and kernel ridge regressors
 
@@ -111,7 +111,7 @@ class MixBoost(HNBM):
         super().__init__(loss, num_iterations, learning_rate, base_learners, probabilities)
 
 def test(classification=False):
-    ''' Test MixBoost on a synthetic learning task:
+    ''' Test SnapBoost on a synthetic learning task:
         
         Args:
             classification (bool): generate a classification task (if True) 
@@ -121,8 +121,8 @@ def test(classification=False):
     # for deterministic results across runs
     np.random.seed(42)
 
-    # construct a MixBoost object
-    model = MixBoost(loss=LogisticLoss if classification else MeanSquaredError)
+    # construct a SnapBoost object
+    model = SnapBoost(loss=LogisticLoss if classification else MeanSquaredError)
 
     # generate a dataset (regression task)
     if classification:
@@ -135,19 +135,19 @@ def test(classification=False):
     # split into train/test datasets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # train a MixBoost model
+    # train a SnapBoost model
     model.fit(X_train, y_train)
 
-    # predict using the MixBoost model
+    # predict using the SnapBoost model
     preds = model.predict(X_test)
 
     # evaluate the model
     if classification:
         logloss= log_loss(y_test, 1.0/(1.0+np.exp(-preds)))
-        print("MixBoost log_loss (test set): %.4f" % (logloss)) 
+        print("SnapBoost log_loss (test set): %.4f" % (logloss)) 
     else:
         rmse = np.sqrt(mean_squared_error(y_test, preds))
-        print("MixBoost RMSE     (test set): %.4f" % (rmse))
+        print("SnapBoost RMSE     (test set): %.4f" % (rmse))
 
 
 if __name__ == "__main__":
